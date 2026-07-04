@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flexbox Pond - Learn CSS Flexbox</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <!-- ============================================= -->
+  <!-- AUTH SCREEN                                   -->
+  <!-- ============================================= -->
+  <div id="authScreen" class="auth-screen">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <span class="auth-logo-icon">🐸</span>
+        <h1>Flexbox Pond</h1>
+        <p class="auth-subtitle">Learn CSS Flexbox by playing</p>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm" class="auth-form">
+        <div class="form-group">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" placeholder="your@email.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" placeholder="Enter password" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-auth" id="btnLogin">
+          <span class="btn-text">Log In</span>
+          <span class="btn-spinner hidden"></span>
+        </button>
+        <p class="auth-switch">
+          Don't have an account? <a href="#" id="showRegister">Register</a>
+        </p>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" class="auth-form hidden">
+        <div class="form-group">
+          <label for="regName">Display Name</label>
+          <input type="text" id="regName" placeholder="Your name" required>
+        </div>
+        <div class="form-group">
+          <label for="regEmail">Email</label>
+          <input type="email" id="regEmail" placeholder="your@email.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="regPassword">Password</label>
+          <input type="password" id="regPassword" placeholder="Min 6 characters" required minlength="6" autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn btn-auth" id="btnRegister">
+          <span class="btn-text">Create Account</span>
+          <span class="btn-spinner hidden"></span>
+        </button>
+        <p class="auth-switch">
+          Already have an account? <a href="#" id="showLogin">Log In</a>
+        </p>
+      </form>
+
+      <div id="authError" class="auth-error hidden"></div>
+    </div>
+  </div>
+
+  <!-- ============================================= -->
+  <!-- GAME SCREEN                                   -->
+  <!-- ============================================= -->
+  <div id="gameScreen" class="app hidden">
+    <header class="header">
+      <div class="header-left">
+        <div class="logo">
+          <span class="logo-icon">🐸</span>
+          <h1>Flexbox Pond</h1>
+        </div>
+      </div>
+      <div class="header-center">
+        <div class="level-indicator">
+          <span id="levelBadge">Level 1</span>
+          <span id="levelTitle" class="level-title-text">Flex End</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="user-info">
+          <span id="userName" class="user-name"></span>
+          <button class="btn btn-logout" id="btnLogout">Logout</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <!-- LEFT: Game Area -->
+      <section class="game-panel">
+        <div class="panel-header">
+          <div>
+            <h2>Target</h2>
+            <p id="levelDescription" class="level-desc"></p>
+          </div>
+        </div>
+        <div class="pond-wrapper">
+          <div class="pond" id="pond">
+            <div class="lily-pads" id="lilyPads"></div>
+            <div class="frogs" id="frogs"></div>
+          </div>
+          <div class="pond-label">.pond</div>
+        </div>
+        <div id="errorMsg" class="error-msg hidden"></div>
+      </section>
+
+      <!-- RIGHT: Code Editor -->
+      <section class="editor-panel">
+        <div class="panel-header">
+          <h2>Write CSS</h2>
+          <div class="hint-area">
+            <span id="attemptsCount" class="attempts-badge">0 / 5</span>
+            <button class="btn btn-hint" id="hintToggle" disabled>
+              <span>Hint</span>
+            </button>
+          </div>
+        </div>
+        <div id="hintBox" class="hint-box">
+          <p id="hintText"></p>
+        </div>
+        <div class="editor-wrapper">
+          <div class="editor-header">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+            <span class="editor-filename">style.css</span>
+          </div>
+          <div class="editor">
+            <div class="line-numbers" id="lineNumbers"></div>
+            <textarea id="codeEditor" spellcheck="false"></textarea>
+          </div>
+        </div>
+        <div class="button-group">
+          <button class="btn btn-run" id="btnRun">
+            <span class="btn-icon">▶</span> Run
+          </button>
+          <button class="btn btn-reset" id="btnReset">
+            <span class="btn-icon">↺</span> Reset
+          </button>
+          <button class="btn btn-next" id="btnNext" disabled>
+            <span class="btn-icon">→</span> Next
+          </button>
+        </div>
+        <div class="level-nav">
+          <button class="btn btn-nav" id="btnPrev">← Prev</button>
+          <div class="level-dots" id="levelDots"></div>
+          <button class="btn btn-nav" id="btnNextNav">Next →</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Success Overlay -->
+    <div id="successOverlay" class="success-overlay">
+      <div class="success-content">
+        <div class="success-icon">🎉</div>
+        <h2>Excellent!</h2>
+        <p id="successMessage">Level completed!</p>
+        <button class="btn btn-next-large" id="btnNextLarge">Next Level →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="firebase-config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
